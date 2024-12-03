@@ -4,3 +4,5 @@ This expects the files `large.txt`, `left.txt`, and `right.txt` to exist in `C:\
 
 `npm install` and 
 `npm run dev` to run it. 
+
+This is my first [Next.js](https://nextjs.org) app and I am not a Javascript Developer professionally, use at your own risk.
