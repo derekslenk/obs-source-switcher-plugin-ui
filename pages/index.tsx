@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from '../styles/Home.module.css';
+import CheckSource from '../components/CheckSource';
+
 
 type Stream = {
   id: number;
@@ -51,6 +53,12 @@ export default function Home() {
 
   return (
     <div>
+      <h1>OBS Source Switcher</h1>
+            {/* Check Source Component */}
+            <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #ccc' }}>
+        <CheckSource />
+      </div>
+      
          {/* Add New Stream Link */}
       <div style={{ textAlign: 'center', marginBottom: '20px' }}>
         <Link href="/add"
