@@ -3,6 +3,8 @@ This is a [Next.js](https://nextjs.org) app to control multiple OBS [Source Swit
 This expects the files `large.txt`, `left.txt`, and `right.txt` to exist in `C:\OBS\source-switching`. This will be more easily configured in an upcoming iteration.
 In the "Source Switcher" properties in OBS, at the bottom, is a setting called `Current Source File`. Enable that, point it to the location of one of the text files, and put the read interval to 1000ms. Your source will change whenever the text file changes to a source _that is defined in the Source Switcher properties_
 
+The list of available sources is defined in a SQLite3 DB, location set in the `api/setActive.ts` route.
+
 `npm install` and 
 `npm run dev` to run it. 
 
