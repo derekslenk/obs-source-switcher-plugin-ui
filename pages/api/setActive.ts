@@ -1,6 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import db from '../../lib/database';
 import fs from 'fs';
+import path from 'path';
+import config from '../../config';
+import db from '../../lib/database';
+
 
 type Stream = {
   id: number;
@@ -18,41 +21,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { screen, id }: { screen: string; id: number } = req.body;
 
-  // Validate screen name
   const validScreens = ['large', 'left', 'right'];
   if (!validScreens.includes(screen)) {
     res.status(400).json({ error: 'Invalid screen name' });
     return;
   }
 
-  // Wrap database operations in a Promise to ensure proper handling
-  const stream: Stream | null = await new Promise((resolve, reject) => {
-    db.get('SELECT * FROM streams WHERE id = ?', [id], (err, row) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(row);
-      }
-    });
-  }).catch((error) => {
-    console.error('Database query failed:', error);
-    res.status(500).json({ error: 'Internal Server Error', details: error.message });
-    return null;
-  });
-
-  if (!stream) {
-    // Response is already sent if there's an error in the database query
-    return;
-  }
+  const filePath = path.join(config.FILE_DIRECTORY, `${screen}.txt`);
 
   try {
-    // Write the active stream's `obs_source_name` to the corresponding file
-    const filename = `C:\\OBS\\source-switching\\${screen}.txt`;
-    fs.writeFileSync(filename, stream.obs_source_name);
+    // Example: Fetch the stream from your database
+    const stream: Stream | null = await new Promise((resolve, reject) => {
+      db.get('SELECT * FROM streams WHERE id = ?', [id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
 
+    if (!stream) {
+      res.status(404).json({ error: 'Stream not found' });
+      return;
+    }
+
+    // Write the obs_source_name to the corresponding file
+    fs.writeFileSync(filePath, stream.obs_source_name);
     res.status(200).json({ message: `${screen} updated successfully.` });
   } catch (error) {
-    console.error('Failed to write to file:', error);
-    res.status(500).json({ error: 'Failed to write to file', details: error.message });
+    console.error('Error updating active source:', error);
+    res.status(500).json({ error: 'Failed to update active source', details: error.message });
   }
 }
