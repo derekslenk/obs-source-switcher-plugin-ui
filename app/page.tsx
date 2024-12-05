@@ -1,6 +1,8 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import styles from '../styles/Home.module.css';
+// import styles from './global.css';
 
 type Stream = {
   id: number;
@@ -54,7 +56,7 @@ export default function Home() {
          {/* Add New Stream Link */}
       <div style={{ textAlign: 'center', marginBottom: '20px' }}>
         <Link href="/add"
-          className={styles.linkButton}>Add New Stream
+          className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">Add New Stream
         </Link>
       </div>
     <div style={{ display: 'flex', justifyContent: 'space-around', padding: '20px' }}>
