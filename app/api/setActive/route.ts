@@ -29,8 +29,8 @@ export async function POST(request: NextRequest) {
     const filePath = path.join(config.FILE_DIRECTORY, `${screen}.txt`);
   
     try {
-        const body = await request.json();
-        const { name, obs_source_name, url } = body;
+    //     const streamBody = await request.json();
+    //     const { name, obs_source_name, url } = streamBody;
         const stream: Stream | null = await new Promise((resolve, reject) => {
             db.get('SELECT * FROM streams WHERE id = ?', [id], (err, row) => {
                 if (err) reject(err);
