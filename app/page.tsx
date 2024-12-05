@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Dropdown from '@/components/Dropdown';
 // import styles from './global.css';
 
 type Stream = {
@@ -59,59 +60,47 @@ export default function Home() {
           className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600">Add New Stream
         </Link>
       </div>
+    <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+      <h1>Manage Streams</h1>  {/* TODO: style me please */}
+    </div>
     <div style={{ display: 'flex', justifyContent: 'space-around', padding: '20px' }}>
       {/* Large Screen */}
       <div style={{ flex: 1, textAlign: 'center', border: '1px solid black', padding: '10px' }}>
         <h2>Large</h2>
-        <select
-          value={
-            streams.find((stream) => stream.obs_source_name === activeSources.large)?.id || ''
+        <Dropdown
+          options={streams}
+          activeId={
+            streams.find((stream) => stream.obs_source_name === activeSources.large)?.id || null
           }
-          onChange={(e) => handleSetActive('large', Number(e.target.value) || null)}
-        >
-          <option value="">Select a Stream...</option>
-          {streams.map((stream) => (
-            <option key={stream.id} value={stream.id}>
-              {stream.name}
-            </option>
-          ))}
-        </select>
-      </div>
+          onSelect={(id) => handleSetActive('large', id)}
+          label="Select a Stream..."
+        />
+        </div>
 
       {/* Left Screen */}
       <div style={{ flex: 1, textAlign: 'center', border: '1px solid black', padding: '10px' }}>
         <h2>Left</h2>
-        <select
-          value={
-            streams.find((stream) => stream.obs_source_name === activeSources.left)?.id || ''
+        <Dropdown
+          options={streams}
+          activeId={
+            streams.find((stream) => stream.obs_source_name === activeSources.left)?.id || null
           }
-          onChange={(e) => handleSetActive('left', Number(e.target.value) || null)}
-        >
-          <option value="">Select a Stream...</option>
-          {streams.map((stream) => (
-            <option key={stream.id} value={stream.id}>
-              {stream.name}
-            </option>
-          ))}
-        </select>
+          onSelect={(id) => handleSetActive('left', id)}
+          label="Select a Stream..."
+        />
       </div>
 
       {/* Right Screen */}
       <div style={{ flex: 1, textAlign: 'center', border: '1px solid black', padding: '10px' }}>
         <h2>Right</h2>
-        <select
-          value={
-            streams.find((stream) => stream.obs_source_name === activeSources.right)?.id || ''
+        <Dropdown
+          options={streams}
+          activeId={
+            streams.find((stream) => stream.obs_source_name === activeSources.right)?.id || null
           }
-          onChange={(e) => handleSetActive('right', Number(e.target.value) || null)}
-        >
-          <option value="">Select a Stream...</option>
-          {streams.map((stream) => (
-            <option key={stream.id} value={stream.id}>
-              {stream.name}
-            </option>
-          ))}
-        </select>
+          onSelect={(id) => handleSetActive('right', id)}
+          label="Select a Stream..."
+        />
       </div>
     </div>
     </div>
