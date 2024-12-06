@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Dropdown from '../../components/Dropdown'; // Adjust the import path as needed
+import { Team } from '@/types';
 
 export default function AddStreamClient() {
   const [formData, setFormData] = useState({
@@ -22,7 +23,7 @@ export default function AddStreamClient() {
 
         // Map the API data to the format required by the Dropdown
         setTeams(
-          data.map((team: { team_id: any; team_name: any; }) => ({
+          data.map((team:Team) => ({
             id: team.team_id,
             name: team.team_name,
           }))
@@ -39,7 +40,7 @@ export default function AddStreamClient() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleTeamSelect = (teamId: any) => {
+  const handleTeamSelect = (teamId) => {
     setFormData((prev) => ({ ...prev, team_id: teamId }));
   };
 

@@ -13,7 +13,7 @@ const screens = [
   'ss_bottom_right',
 ];
 
-async function fetchTeamName(teamId) {
+async function fetchTeamName(teamId: any) {
   try {
     const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
     const response = await fetch(`${baseUrl}/api/getTeamName?team_id=${teamId}`);
