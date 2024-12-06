@@ -22,7 +22,7 @@ export default function AddStreamClient() {
 
         // Map the API data to the format required by the Dropdown
         setTeams(
-          data.map((team) => ({
+          data.map((team: { team_id: any; team_name: any; }) => ({
             id: team.team_id,
             name: team.team_name,
           }))
@@ -39,7 +39,7 @@ export default function AddStreamClient() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleTeamSelect = (teamId) => {
+  const handleTeamSelect = (teamId: any) => {
     setFormData((prev) => ({ ...prev, team_id: teamId }));
   };
 
