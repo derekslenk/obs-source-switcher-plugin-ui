@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 export default function Dropdown({ options, activeId, onSelect, label, isOpen, onToggle }) {
   const dropdownRef = useRef(null);
