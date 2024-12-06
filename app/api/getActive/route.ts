@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 // import config from '../../../config';
@@ -10,7 +10,7 @@ if (!fs.existsSync(FILE_DIRECTORY)) {
 }
 console.log('using',  FILE_DIRECTORY)
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
         const largePath = path.join(FILE_DIRECTORY, 'large.txt');
         const leftPath = path.join(FILE_DIRECTORY, 'left.txt');
@@ -27,9 +27,7 @@ export async function GET(request: NextRequest) {
         const topRight = fs.existsSync(topRightPath) ? fs.readFileSync(topRightPath, 'utf-8') : null;
         const bottomLeft = fs.existsSync(bottomLeftPath) ? fs.readFileSync(bottomLeftPath, 'utf-8') : null;
         const bottomRight = fs.existsSync(bottomRightPath) ? fs.readFileSync(bottomRightPath, 'utf-8') : null;
-
         
-        console.log(bottomLeft)
         return NextResponse.json({ large, left, right, topLeft, topRight, bottomLeft, bottomRight }, {status: 201})
       } catch (error) {
         console.error('Error reading active sources:', error);

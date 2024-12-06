@@ -1,38 +1,62 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
-export default function Dropdown({ options, activeId, onSelect, label, isOpen, onToggle }) {
+type DropdownProps = {
+  options: Array<{ id: number; name: string }>;
+  activeId: number | null;
+  onSelect: (id: number) => void;
+  label: string;
+  isOpen?: boolean;
+  onToggle?: (isOpen: boolean) => void;
+};
+
+export default function Dropdown({
+  options,
+  activeId,
+  onSelect,
+  label,
+  isOpen: controlledIsOpen,
+  onToggle,
+}: DropdownProps) {
   const dropdownRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(controlledIsOpen ?? false);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        onToggle(false); // Close the dropdown when clicking outside
+        if (onToggle) onToggle(false);
+        else setIsOpen(false);
       }
     };
 
-    if (isOpen) {
+    if (controlledIsOpen || isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen, onToggle]);
+  }, [controlledIsOpen, isOpen, onToggle]);
 
   const activeOption = options.find((option) => option.id === activeId) || null;
 
-  const handleSelect = (option) => {
-    onSelect(option.id); // Trigger action immediately on selection
-    onToggle(false); // Close dropdown after selection
+  const handleSelect = (option: { id: number }) => {
+    onSelect(option.id);
+    if (onToggle) onToggle(false);
+    else setIsOpen(false);
+  };
+
+  const toggleDropdown = () => {
+    if (onToggle) onToggle(!isOpen);
+    else setIsOpen((prev) => !prev);
   };
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
       <button
         type="button"
-        onClick={() => onToggle(!isOpen)}
+        onClick={toggleDropdown}
         className="inline-flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
       >
         {activeOption ? activeOption.name : label}
@@ -45,16 +69,16 @@ export default function Dropdown({ options, activeId, onSelect, label, isOpen, o
         >
           <path
             fillRule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a 1 1 0 01-1.414 0l-4-4a 1 1 0 010-1.414z"
             clipRule="evenodd"
           />
         </svg>
       </button>
 
-      {isOpen && (
+      {(controlledIsOpen ?? isOpen) && (
         <div
           className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-          style={{ zIndex: 10 }} // Ensure proper stacking
+          style={{ zIndex: 50 }} // Set a high z-index value
         >
           <div className="py-1">
             {options.map((option) => (

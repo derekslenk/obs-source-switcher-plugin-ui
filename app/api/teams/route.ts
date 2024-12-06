@@ -1,13 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getDatabase } from '../../../lib/database';
+import { Team } from '@/types';
 
-type Team = {
-    team_id: number;
-    team_name: string;
-};
-
-export async function GET(request: NextRequest) {
+export async function GET() {
     const db = await getDatabase();
-    const teams = await db.all('SELECT * FROM teams');
+    const teams:Team = await db.all('SELECT * FROM teams');
     return NextResponse.json(teams);
 }
