@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDatabase } from '../../../lib/database';
-const { connectToOBS, getOBSClient, disconnectFromOBS, addSourceToSwitcher } = require('../../../lib/obsClient');
+import { connectToOBS, getOBSClient, disconnectFromOBS, addSourceToSwitcher } from '../../../lib/obsClient';
 
 let obs = null
-let screens = [
+const screens = [
   'ss_large',
   'ss_left',
   'ss_right',
@@ -51,7 +51,7 @@ async function addBrowserSourceWithAudioControl(obs, sceneName, inputName, url) 
         await obs.call('GetInputSettings', { inputName });
         inputReady = true;
         break;
-      } catch (err) {
+      } catch  {
         console.log(`Waiting for input "${inputName}" to initialize...`);
         await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 500ms before retrying
       }
