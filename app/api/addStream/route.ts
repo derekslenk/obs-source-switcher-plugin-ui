@@ -3,6 +3,15 @@ import { getDatabase } from '../../../lib/database';
 const { connectToOBS, getOBSClient, disconnectFromOBS, addSourceToSwitcher } = require('../../../lib/obsClient');
 
 let obs = null
+let screens = [
+  'ss_large',
+  'ss_left',
+  'ss_right',
+  'ss_top_left',
+  'ss_top_right',
+  'ss_bottom_left',
+  'ss_bottom_right',
+];
 
 async function fetchTeamName(teamId) {
   try {
@@ -19,6 +28,62 @@ async function fetchTeamName(teamId) {
   }
 }
 
+async function addBrowserSourceWithAudioControl(obs, sceneName, inputName, url) {
+  try {
+    // Step 1: Create the browser source input
+    await obs.call('CreateInput', {
+      sceneName,
+      inputName,
+      inputKind: 'browser_source',
+      inputSettings: {
+        width: 1600,
+        height: 900,
+        url,
+      },
+    });
+
+    console.log(`Browser source "${inputName}" created successfully.`);
+
+    // Step 2: Wait for the input to initialize
+    let inputReady = false;
+    for (let i = 0; i < 10; i++) {
+      try {
+        await obs.call('GetInputSettings', { inputName });
+        inputReady = true;
+        break;
+      } catch (err) {
+        console.log(`Waiting for input "${inputName}" to initialize...`);
+        await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 500ms before retrying
+      }
+    }
+
+    if (!inputReady) {
+      throw new Error(`Input "${inputName}" did not initialize in time.`);
+    }
+
+
+    // Step 3: Enable "Reroute audio"
+    await obs.call('SetInputSettings', {
+      inputName,
+      inputSettings: {
+        reroute_audio: true,
+      },
+      overlay: true, // Keep existing settings and apply changes
+    });
+
+    console.log(`Audio rerouted for "${inputName}".`);
+
+    // Step 4: Mute the input
+    await obs.call('SetInputMute', {
+      inputName,
+      inputMuted: true,
+    });
+
+    console.log(`Audio muted for "${inputName}".`);
+  } catch (error) {
+    console.error('Error adding browser source with audio control:', error.message);
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,48 +122,20 @@ export async function POST(request: NextRequest) {
     const sourceExists = inputs.some((input) => input.inputName === obs_source_name);
 
     if (!sourceExists) {
-      // Create a new browser source in OBS
-      await obs.call('CreateInput', {
-        sceneName: teamName, // Replace with your actual scene name
-        inputName: obs_source_name,
-        inputKind: 'browser_source',
-        inputSettings: {
-          width: 1600,
-          height: 900,
-          url, // Use the Twitch URL as the source
-        },
-      });
-      // Step 4: Enable "Control audio via OBS" via second call
-      await obs.call('SetInputSettings', {
-        inputName: obs_source_name,
-        inputSettings: {
-          control_audio: true, // Enable audio control
-        },
-        overlay: true, // Keep existing settings and apply changes
-      });
+      await addBrowserSourceWithAudioControl(obs, teamName, obs_source_name, url)
 
       console.log(`OBS source "${obs_source_name}" created.`);
-      addSourceToSwitcher('ss_large', [
-        { hidden: false, selected: false, value: obs_source_name },
-      ]);
-      addSourceToSwitcher('ss_left', [
-        { hidden: false, selected: false, value: obs_source_name },
-      ]);
-      addSourceToSwitcher('ss_right', [
-        { hidden: false, selected: false, value: obs_source_name },
-      ]);
-      addSourceToSwitcher('ss_top_right', [
-        { hidden: false, selected: false, value: obs_source_name },
-      ]);
-      addSourceToSwitcher('ss_top_left', [
-        { hidden: false, selected: false, value: obs_source_name },
-      ]);
-      addSourceToSwitcher('ss_bottom_right', [
-        { hidden: false, selected: false, value: obs_source_name },
-      ]);
-      addSourceToSwitcher('ss_bottom_left', [
-        { hidden: false, selected: false, value: obs_source_name },
-      ]);
+
+      for (const screen of screens) {
+        try {
+          await addSourceToSwitcher(screen, [
+            { hidden: false, selected: false, value: obs_source_name },
+          ]);
+        } catch (error) {
+          console.error(`Failed to add source to ${screen}:`, error.message);
+        }
+      }
+      
     } else {
       console.log(`OBS source "${obs_source_name}" already exists.`);
     }
@@ -106,10 +143,11 @@ export async function POST(request: NextRequest) {
     const db = await getDatabase();
     const query = `INSERT INTO streams (name, obs_source_name, url, team_id) VALUES (?, ?, ?, ?)`;
     db.run(query, [name, obs_source_name, url, team_id])
-    disconnectFromOBS();
+    await disconnectFromOBS();
     return NextResponse.json({ message: 'Stream added successfully' }, {status: 201})
   } catch (error) {
     console.error('Error adding stream:', error);
+    await disconnectFromOBS();
     return NextResponse.json({ error: 'Failed to add stream' }, { status: 500 });
   }
 }
