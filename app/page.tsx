@@ -23,6 +23,8 @@ export default function Home() {
     bottomRight: null,
   });
 
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null); // Manage open dropdown
+
   useEffect(() => {
     // Fetch available streams from the database
     fetch('/api/streams')
@@ -51,7 +53,7 @@ export default function Home() {
     // Update the backend
     try {
       if (id) {
-        console.log('Setting screen ', screen)
+        console.log('Setting screen ', screen);
         const response = await fetch('/api/setActive', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -68,6 +70,10 @@ export default function Home() {
     } catch (error) {
       console.error('Error setting active stream:', error);
     }
+  };
+
+  const handleToggleDropdown = (screen: string) => {
+    setOpenDropdown((prev) => (prev === screen ? null : screen)); // Toggle dropdown open/close
   };
 
   return (
@@ -97,6 +103,8 @@ export default function Home() {
             }
             onSelect={(id) => handleSetActive('large', id)}
             label="Select a Stream..."
+            isOpen={openDropdown === 'large'}
+            onToggle={() => handleToggleDropdown('large')}
           />
         </div>
       </div>
@@ -113,6 +121,8 @@ export default function Home() {
             }
             onSelect={(id) => handleSetActive('left', id)}
             label="Select a Stream..."
+            isOpen={openDropdown === 'left'}
+            onToggle={() => handleToggleDropdown('left')}
           />
         </div>
 
@@ -126,65 +136,36 @@ export default function Home() {
             }
             onSelect={(id) => handleSetActive('right', id)}
             label="Select a Stream..."
+            isOpen={openDropdown === 'right'}
+            onToggle={() => handleToggleDropdown('right')}
           />
         </div>
       </div>
 
       {/* 2x2 Square for Additional Sources */}
       <div className="grid grid-cols-2 gap-4 p-5">
-        {/* Top Left */}
-        <div className="text-center border border-gray-400 p-4 rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-2">Top Left</h2>
-          <Dropdown
-            options={streams}
-            activeId={
-              streams.find((stream) => stream.obs_source_name === activeSources.topLeft)?.id || null
-            }
-            onSelect={(id) => handleSetActive('topLeft', id)}
-            label="Select a Stream..."
-          />
-        </div>
-
-        {/* Top Right */}
-        <div className="text-center border border-gray-400 p-4 rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-2">Top Right</h2>
-          <Dropdown
-            options={streams}
-            activeId={
-              streams.find((stream) => stream.obs_source_name === activeSources.topRight)?.id || null
-            }
-            onSelect={(id) => handleSetActive('topRight', id)}
-            label="Select a Stream..."
-          />
-        </div>
-
-        {/* Bottom Left */}
-        <div className="text-center border border-gray-400 p-4 rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-2">Bottom Left</h2>
-          <Dropdown
-            options={streams}
-            activeId={
-              streams.find((stream) => stream.obs_source_name === activeSources.bottomLeft)?.id || null
-            }
-            onSelect={(id) => handleSetActive('bottomLeft', id)}
-            label="Select a Stream..."
-          />
-        </div>
-
-        {/* Bottom Right */}
-        <div className="text-center border border-gray-400 p-4 rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-2">Bottom Right</h2>
-          <Dropdown
-            options={streams}
-            activeId={
-              streams.find((stream) => stream.obs_source_name === activeSources.bottomRight)?.id || null
-            }
-            onSelect={(id) => handleSetActive('bottomRight', id)}
-            label="Select a Stream..."
-          />
-        </div>
+        {[
+          { screen: 'topLeft', label: 'Top Left' },
+          { screen: 'topRight', label: 'Top Right' },
+          { screen: 'bottomLeft', label: 'Bottom Left' },
+          { screen: 'bottomRight', label: 'Bottom Right' },
+        ].map(({ screen, label }) => (
+          <div key={screen} className="text-center border border-gray-400 p-4 rounded-lg shadow">
+            <h2 className="text-lg font-semibold mb-2">{label}</h2>
+            <Dropdown
+              options={streams}
+              activeId={
+                streams.find((stream) => stream.obs_source_name === activeSources[screen])?.id ||
+                null
+              }
+              onSelect={(id) => handleSetActive(screen, id)}
+              label="Select a Stream..."
+              isOpen={openDropdown === screen}
+              onToggle={() => handleToggleDropdown(screen)}
+            />
+          </div>
+        ))}
       </div>
     </div>
-
   );
 }

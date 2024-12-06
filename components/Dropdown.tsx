@@ -1,23 +1,38 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-export default function Dropdown({ options, activeId, onSelect, label }) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function Dropdown({ options, activeId, onSelect, label, isOpen, onToggle }) {
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        onToggle(false); // Close the dropdown when clicking outside
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onToggle]);
+
   const activeOption = options.find((option) => option.id === activeId) || null;
-
-  const toggleDropdown = () => setIsOpen((prev) => !prev);
 
   const handleSelect = (option) => {
     onSelect(option.id); // Trigger action immediately on selection
-    setIsOpen(false);
+    onToggle(false); // Close dropdown after selection
   };
 
   return (
-    <div className="relative inline-block text-left">
+    <div className="relative inline-block text-left" ref={dropdownRef}>
       <button
         type="button"
-        onClick={toggleDropdown}
+        onClick={() => onToggle(!isOpen)}
         className="inline-flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
       >
         {activeOption ? activeOption.name : label}
@@ -37,7 +52,10 @@ export default function Dropdown({ options, activeId, onSelect, label }) {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <div
+          className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          style={{ zIndex: 10 }} // Ensure proper stacking
+        >
           <div className="py-1">
             {options.map((option) => (
               <button
