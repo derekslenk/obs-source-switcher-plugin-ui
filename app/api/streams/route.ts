@@ -1,19 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import db from '../../../lib/database';
+import { getDatabase } from '../../../lib/database';
 
 type Stream = {
   id: number;
   name: string;
   obs_source_name: string;
   url: string;
+  team_id: number;
 };
 
 export async function GET(request: NextRequest) {
-    const streams: Stream[] = await new Promise((resolve, reject) => {
-        db.all('SELECT * FROM streams', [], (err, rows) => {
-          if (err) reject(err);
-          else resolve(rows);
-        });
-      });
+    const db = await getDatabase();
+    const streams = await db.all('SELECT * FROM streams');
   return NextResponse.json(streams);
 }

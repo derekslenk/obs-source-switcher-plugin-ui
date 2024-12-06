@@ -4,7 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4a7d75dd-579a-4b86-9a48-32c479311b6a" name="Changes" comment="wip" />
+    <list default="true" id="4a7d75dd-579a-4b86-9a48-32c479311b6a" name="Changes" comment="feat: Obs websocket additions to source_switcher working">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/addStream/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/addStream/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/getActive/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/getActive/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/setActive/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/setActive/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/streams/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/streams/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/globals.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Dropdown.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Dropdown.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/database.ts" beforeDir="false" afterPath="$PROJECT_DIR$/lib/database.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/obsClient.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/obsClient.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tailwind.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,10 +33,10 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -38,6 +53,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "obs__websocket__connections",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/derek/dev/src/obs-source-switcher/pages",
@@ -105,6 +121,7 @@
       <workItem from="1733268255340" duration="233000" />
       <workItem from="1733268494696" duration="1446000" />
       <workItem from="1733270225818" duration="6213000" />
+      <workItem from="1733452522467" duration="398000" />
     </task>
     <task id="LOCAL-00001" summary="ci: add project files">
       <option name="closed" value="true" />
@@ -184,6 +201,7 @@
     <MESSAGE value="ci: compiler warnings" />
     <MESSAGE value="feat: basic source connection and inspection" />
     <MESSAGE value="wip" />
-    <option name="LAST_COMMIT_MESSAGE" value="wip" />
+    <MESSAGE value="feat: Obs websocket additions to source_switcher working" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: Obs websocket additions to source_switcher working" />
   </component>
 </project>

@@ -5,7 +5,6 @@ import { useState } from 'react';
 export default function Dropdown({ options, activeId, onSelect, label }) {
   const [isOpen, setIsOpen] = useState(false);
   const activeOption = options.find((option) => option.id === activeId) || null;
-
   const toggleDropdown = () => setIsOpen((prev) => !prev);
   const handleSelect = (option) => {
     onSelect(option.id);
