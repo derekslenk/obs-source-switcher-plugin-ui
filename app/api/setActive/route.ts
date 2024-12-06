@@ -22,19 +22,17 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { screen, id } = body;
 
-    const validScreens = ['large', 'left', 'right'];
+    const validScreens = ['large', 'left', 'right', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight'];
     if (!validScreens.includes(screen)) {
         return NextResponse.json({ error: 'Invalid screen name' },{status: 400})
     }
-  
+    console.log("writing files to ", path.join(FILE_DIRECTORY(), `${screen}.txt`))
     const filePath = path.join(FILE_DIRECTORY(), `${screen}.txt`);
   
     try {
-    //     const streamBody = await request.json();
-    //     const { name, obs_source_name, url } = streamBody;
         const db = await getDatabase();
         const streamId = await db.get('SELECT * FROM streams WHERE id = ?', [id]);
-        console.log(streamId); 
+        console.log("Stream ID: ", streamId); 
 
         if (!streamId) { return NextResponse.json({ error: 'Stream not found' },{status: 400}) }
 

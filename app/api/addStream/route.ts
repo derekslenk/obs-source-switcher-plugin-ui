@@ -4,10 +4,26 @@ const { connectToOBS, getOBSClient, disconnectFromOBS, addSourceToSwitcher } = r
 
 let obs = null
 
+async function fetchTeamName(teamId) {
+  try {
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/getTeamName?team_id=${teamId}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch team name');
+    }
+    const data = await response.json();
+    return data.team_name;
+  } catch (error) {
+    console.error('Error:', error.message);
+    return null;
+  }
+}
+
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, obs_source_name, url } = body;
+    const { name, obs_source_name, url, team_id } = body;
 
     if (!name || !obs_source_name || !url) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -25,19 +41,25 @@ export async function POST(request: NextRequest) {
     try {
       const response = await obs.call('GetInputList');
       inputs = response.inputs;
-      console.log('Inputs:', inputs);
+      // console.log('Inputs:', inputs);
     } catch (err) {
       console.error('Failed to fetch inputs:', err.message);
       throw new Error('GetInputList failed.');
     }
-
-    // console.log('Input list "${inputs}')
+    const teamName = await fetchTeamName(team_id);
+    console.log('Team Name:', teamName)
+    const { scenes } = await obs.call('GetSceneList');
+    const groupExists = scenes.some((scene) => scene.sceneName === teamName);    
+    if (!groupExists) {
+      await obs.call('CreateScene', { sceneName: teamName });
+    }
+    
     const sourceExists = inputs.some((input) => input.inputName === obs_source_name);
 
     if (!sourceExists) {
       // Create a new browser source in OBS
       await obs.call('CreateInput', {
-        sceneName: 'twitch_streams', // Replace with your actual scene name
+        sceneName: teamName, // Replace with your actual scene name
         inputName: obs_source_name,
         inputKind: 'browser_source',
         inputSettings: {
@@ -46,6 +68,15 @@ export async function POST(request: NextRequest) {
           url, // Use the Twitch URL as the source
         },
       });
+      // Step 4: Enable "Control audio via OBS" via second call
+      await obs.call('SetInputSettings', {
+        inputName: obs_source_name,
+        inputSettings: {
+          control_audio: true, // Enable audio control
+        },
+        overlay: true, // Keep existing settings and apply changes
+      });
+
       console.log(`OBS source "${obs_source_name}" created.`);
       addSourceToSwitcher('ss_large', [
         { hidden: false, selected: false, value: obs_source_name },
@@ -56,13 +87,25 @@ export async function POST(request: NextRequest) {
       addSourceToSwitcher('ss_right', [
         { hidden: false, selected: false, value: obs_source_name },
       ]);
+      addSourceToSwitcher('ss_top_right', [
+        { hidden: false, selected: false, value: obs_source_name },
+      ]);
+      addSourceToSwitcher('ss_top_left', [
+        { hidden: false, selected: false, value: obs_source_name },
+      ]);
+      addSourceToSwitcher('ss_bottom_right', [
+        { hidden: false, selected: false, value: obs_source_name },
+      ]);
+      addSourceToSwitcher('ss_bottom_left', [
+        { hidden: false, selected: false, value: obs_source_name },
+      ]);
     } else {
       console.log(`OBS source "${obs_source_name}" already exists.`);
     }
 
     const db = await getDatabase();
-    const query = `INSERT INTO streams (name, obs_source_name, url) VALUES (?, ?, ?)`;
-    db.run(query, [name, obs_source_name, url])
+    const query = `INSERT INTO streams (name, obs_source_name, url, team_id) VALUES (?, ?, ?, ?)`;
+    db.run(query, [name, obs_source_name, url, team_id])
     disconnectFromOBS();
     return NextResponse.json({ message: 'Stream added successfully' }, {status: 201})
   } catch (error) {
@@ -70,28 +113,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to add stream' }, { status: 500 });
   }
 }
-
-
-// const { connectToOBS, getOBSClient, disconnectFromOBS } = require('../../../lib/obsClient');
-
-// export async function POST(request) {
-//   try {
-//     console.log('Pre-connect');
-//     await connectToOBS(); // Initialize and connect OBS client
-//     console.log('Connected to OBS');
-
-//     console.log('Pre-client');
-//     const obs = getOBSClient(); // Retrieve the connected client
-//     console.log('OBS client retrieved:', obs);
-
-//     // Example operation: GetInputList
-//     const { inputs } = await obs.call('GetInputList');
-//     console.log('Inputs:', inputs);
-
-//     await disconnectFromOBS();
-//     return new Response(JSON.stringify({ message: 'OBS operation successful', inputs }), { status: 200 });
-//   } catch (error) {
-//     console.error('Error during OBS operation:', error.message);
-//     return new Response(JSON.stringify({ error: 'OBS operation failed', details: error.message }), { status: 500 });
-//   }
-// }

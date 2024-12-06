@@ -4,21 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4a7d75dd-579a-4b86-9a48-32c479311b6a" name="Changes" comment="feat: Obs websocket additions to source_switcher working">
+    <list default="true" id="4a7d75dd-579a-4b86-9a48-32c479311b6a" name="Changes" comment="ci: test script could be helpful for future debugging">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/teams/route.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/addStream/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/addStream/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/getActive/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/getActive/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/setActive/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/setActive/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/streams/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/streams/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/globals.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Dropdown.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Dropdown.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/database.ts" beforeDir="false" afterPath="$PROJECT_DIR$/lib/database.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/obsClient.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/obsClient.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tailwind.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,30 +38,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "obs__websocket__connections",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/derek/dev/src/obs-source-switcher/pages",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.dev.executor": "Run",
-    "npm.install.executor": "Run",
-    "project.structure.last.edited": "Global Libraries",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "discord-application",
-    "ts.external.directory.path": "C:\\Users\\derek\\AppData\\Local\\Programs\\IntelliJ IDEA Ultimate\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;obs__websocket__connections&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/derek/dev/src/obs-source-switcher/pages&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
+    &quot;npm.install.executor&quot;: &quot;Run&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Global Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;discord-application&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\derek\\AppData\\Local\\Programs\\IntelliJ IDEA Ultimate\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;sqlite&quot;
+    ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\derek\dev\src\obs-source-switcher\pages" />
@@ -121,7 +116,9 @@
       <workItem from="1733268255340" duration="233000" />
       <workItem from="1733268494696" duration="1446000" />
       <workItem from="1733270225818" duration="6213000" />
-      <workItem from="1733452522467" duration="398000" />
+      <workItem from="1733452522467" duration="1531000" />
+      <workItem from="1733495409100" duration="1599000" />
+      <workItem from="1733501398637" duration="25000" />
     </task>
     <task id="LOCAL-00001" summary="ci: add project files">
       <option name="closed" value="true" />
@@ -187,11 +184,38 @@
       <option name="project" value="LOCAL" />
       <updated>1733282079298</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="feat: Obs websocket additions to source_switcher working">
+      <option name="closed" value="true" />
+      <created>1733452930855</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1733452930855</updated>
+    </task>
+    <task id="LOCAL-00010" summary="ci: test script could be helpful for future debugging">
+      <option name="closed" value="true" />
+      <created>1733453325884</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1733453325884</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="ci: add project files" />
@@ -202,6 +226,7 @@
     <MESSAGE value="feat: basic source connection and inspection" />
     <MESSAGE value="wip" />
     <MESSAGE value="feat: Obs websocket additions to source_switcher working" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: Obs websocket additions to source_switcher working" />
+    <MESSAGE value="ci: test script could be helpful for future debugging" />
+    <option name="LAST_COMMIT_MESSAGE" value="ci: test script could be helpful for future debugging" />
   </component>
 </project>
