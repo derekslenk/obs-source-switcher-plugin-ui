@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
-import config from '../../../config';
-import db from '../../../lib/database';
+import { FILE_DIRECTORY } from '../../../config';
+import { getDatabase } from '../../../lib/database';
 
 type Stream = {
   id: number;
   name: string;
   obs_source_name: string;
   url: string;
+  team_id: number;
 };
 
 type Screen = {
@@ -21,26 +22,21 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { screen, id } = body;
 
-    const validScreens = ['large', 'left', 'right'];
+    const validScreens = ['large', 'left', 'right', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight'];
     if (!validScreens.includes(screen)) {
         return NextResponse.json({ error: 'Invalid screen name' },{status: 400})
     }
-  
-    const filePath = path.join(config.FILE_DIRECTORY, `${screen}.txt`);
+    console.log("writing files to ", path.join(FILE_DIRECTORY(), `${screen}.txt`))
+    const filePath = path.join(FILE_DIRECTORY(), `${screen}.txt`);
   
     try {
-    //     const streamBody = await request.json();
-    //     const { name, obs_source_name, url } = streamBody;
-        const stream: Stream | null = await new Promise((resolve, reject) => {
-            db.get('SELECT * FROM streams WHERE id = ?', [id], (err, row) => {
-                if (err) reject(err);
-                else resolve(row);
-            });
-        });
+        const db = await getDatabase();
+        const streamId = await db.get('SELECT * FROM streams WHERE id = ?', [id]);
+        console.log("Stream ID: ", streamId); 
 
-        if (!stream) { return NextResponse.json({ error: 'Stream not found' },{status: 400}) }
+        if (!streamId) { return NextResponse.json({ error: 'Stream not found' },{status: 400}) }
 
-        fs.writeFileSync(filePath, stream.obs_source_name);
+        fs.writeFileSync(filePath, streamId.obs_source_name);
         return NextResponse.json({ message: `${screen} updated successfully.` },{status: 200});;
     
     } catch (error) {
