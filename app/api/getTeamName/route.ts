@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     const db = await getDatabase();
     const team = await db.get(
-      'SELECT team_name FROM teams WHERE team_id = ?',
+      'SELECT team_name FROM teams_2025_spring_adr WHERE team_id = ?',
       [teamId]
     );
 

@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
     }
 
     const db = await getDatabase();
-    const query = `INSERT INTO streams (name, obs_source_name, url, team_id) VALUES (?, ?, ?, ?)`;
+    const query = `INSERT INTO streams_2025_spring_adr (name, obs_source_name, url, team_id) VALUES (?, ?, ?, ?)`;
     db.run(query, [name, obs_source_name, url, team_id])
     await disconnectFromOBS();
     return NextResponse.json({ message: 'Stream added successfully' }, {status: 201})

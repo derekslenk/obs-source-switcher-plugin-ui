@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
   try {
     const db = await getDatabase();
     const stream: Stream | undefined = await db.get<Stream>(
-      'SELECT * FROM streams WHERE id = ?',
+      'SELECT * FROM streams_2025_spring_adr WHERE id = ?',
       [id]
     );
 
