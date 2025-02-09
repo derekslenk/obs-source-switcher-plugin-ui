@@ -13,15 +13,17 @@ type Stream = {
 
 export default function Home() {
   const [streams, setStreams] = useState<Stream[]>([]);
-  const [activeSources, setActiveSources] = useState({
-    large: null,
-    left: null,
-    right: null,
-    topLeft: null,
-    topRight: null,
-    bottomLeft: null,
-    bottomRight: null,
-  });
+type ScreenType = 'large' | 'left' | 'right' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
+
+const [activeSources, setActiveSources] = useState<Record<ScreenType, string | null>>({
+large: null,
+left: null,
+right: null,
+topLeft: null,
+topRight: null,
+bottomLeft: null,
+bottomRight: null,
+});
 
   const [isLoadingStreams, setIsLoadingStreams] = useState(true);
   const [isLoadingActiveSources, setIsLoadingActiveSources] = useState(true);
@@ -61,7 +63,7 @@ export default function Home() {
     fetchActiveSources();
   }, []);
 
-  const handleSetActive = async (screen: keyof typeof activeSources, id: number | null) => {
+const handleSetActive = async (screen: ScreenType, id: number | null) => {
     const selectedStream = streams.find((stream) => stream.id === id);
 
     // Update local state
@@ -170,10 +172,10 @@ export default function Home() {
           {/* 2x2 Square for Additional Sources */}
           <div className="grid grid-cols-2 gap-4 p-5">
             {[
-              { screen: 'topLeft', label: 'Top Left' },
-              { screen: 'topRight', label: 'Top Right' },
-              { screen: 'bottomLeft', label: 'Bottom Left' },
-              { screen: 'bottomRight', label: 'Bottom Right' },
+            { screen: 'topLeft' as const, label: 'Top Left' },
+            { screen: 'topRight' as const, label: 'Top Right' },
+            { screen: 'bottomLeft' as const, label: 'Bottom Left' },
+            { screen: 'bottomRight' as const, label: 'Bottom Right' },
             ].map(({ screen, label }) => (
               <div key={screen} className="text-center border border-gray-400 p-4 rounded-lg shadow">
                 <h2 className="text-lg font-semibold mb-2">{label}</h2>

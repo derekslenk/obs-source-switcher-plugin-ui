@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     const db = await getDatabase();
     const team = await db.get(
-      'SELECT team_name FROM teams WHERE team_id = ?',
+      'SELECT team_name FROM teams_2025_spring_adr WHERE team_id = ?',
       [teamId]
     );
 
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ team_name: team.team_name });
   } catch (error) {
-    console.error('Error fetching team name:', error.message);
+    console.error('Error fetching team name:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to fetch team name' },
       { status: 500 }

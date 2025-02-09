@@ -2,7 +2,27 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDatabase } from '../../../lib/database';
 import { connectToOBS, getOBSClient, disconnectFromOBS, addSourceToSwitcher } from '../../../lib/obsClient';
 
-let obs = null
+interface OBSClient {
+    call: (method: string, params?: Record<string, unknown>) => Promise<Record<string, unknown>>;
+}
+
+interface OBSScene {
+sceneName: string;
+}
+
+interface OBSInput {
+inputName: string;
+}
+
+interface GetSceneListResponse {
+currentProgramSceneName: string;
+currentPreviewSceneName: string;
+scenes: OBSScene[];
+}
+
+interface GetInputListResponse {
+inputs: OBSInput[];
+}
 const screens = [
   'ss_large',
   'ss_left',
@@ -13,7 +33,7 @@ const screens = [
   'ss_bottom_right',
 ];
 
-async function fetchTeamName(teamId: any) {
+async function fetchTeamName(teamId: number) {
   try {
     const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
     const response = await fetch(`${baseUrl}/api/getTeamName?team_id=${teamId}`);
@@ -22,13 +42,17 @@ async function fetchTeamName(teamId: any) {
     }
     const data = await response.json();
     return data.team_name;
-  } catch (error) {
+} catch (error) {
+if (error instanceof Error) {
     console.error('Error:', error.message);
-    return null;
-  }
+} else {
+    console.error('An unknown error occurred:', error);
+}
+return null;
+}
 }
 
-async function addBrowserSourceWithAudioControl(obs, sceneName, inputName, url) {
+async function addBrowserSourceWithAudioControl(obs: OBSClient, sceneName: string, inputName: string, url: string) {
   try {
     // Step 1: Create the browser source input
     await obs.call('CreateInput', {
@@ -80,9 +104,13 @@ async function addBrowserSourceWithAudioControl(obs, sceneName, inputName, url) 
     });
 
     console.log(`Audio muted for "${inputName}".`);
-  } catch (error) {
+} catch (error) {
+if (error instanceof Error) {
     console.error('Error adding browser source with audio control:', error.message);
-  }
+} else {
+    console.error('An unknown error occurred while adding browser source:', error);
+}
+}
 }
 
 export async function POST(request: NextRequest) {
@@ -98,28 +126,35 @@ export async function POST(request: NextRequest) {
     console.log("Pre-connect")
     await connectToOBS();
     console.log('Pre client')
-    obs = await getOBSClient();
+    const obs: OBSClient = await getOBSClient();
     // obs.on('message', (msg) => {
     //   console.log('Message from OBS:', msg);
     // });
     let inputs;
     try {
-      const response = await obs.call('GetInputList');
-      inputs = response.inputs;
-      // console.log('Inputs:', inputs);
+    const response = await obs.call('GetInputList');
+    const inputListResponse = response as unknown as GetInputListResponse;
+    inputs = inputListResponse.inputs;
+    // console.log('Inputs:', inputs);
     } catch (err) {
-      console.error('Failed to fetch inputs:', err.message);
-      throw new Error('GetInputList failed.');
+    if (err instanceof Error) {
+        console.error('Failed to fetch inputs:', err.message);
+    } else {
+        console.error('Failed to fetch inputs:', err);
+    }
+    throw new Error('GetInputList failed.');
     }
     const teamName = await fetchTeamName(team_id);
     console.log('Team Name:', teamName)
-    const { scenes } = await obs.call('GetSceneList');
-    const groupExists = scenes.some((scene) => scene.sceneName === teamName);    
+    const response = await obs.call('GetSceneList');
+    const sceneListResponse = response as unknown as GetSceneListResponse;
+    const { scenes } = sceneListResponse;
+    const groupExists = scenes.some((scene: OBSScene) => scene.sceneName === teamName);
     if (!groupExists) {
       await obs.call('CreateScene', { sceneName: teamName });
     }
     
-    const sourceExists = inputs.some((input) => input.inputName === obs_source_name);
+    const sourceExists = inputs.some((input: OBSInput) => input.inputName === obs_source_name);
 
     if (!sourceExists) {
       await addBrowserSourceWithAudioControl(obs, teamName, obs_source_name, url)
@@ -132,7 +167,11 @@ export async function POST(request: NextRequest) {
             { hidden: false, selected: false, value: obs_source_name },
           ]);
         } catch (error) {
-          console.error(`Failed to add source to ${screen}:`, error.message);
+        if (error instanceof Error) {
+            console.error(`Failed to add source to ${screen}:`, error.message);
+        } else {
+            console.error(`Failed to add source to ${screen}:`, error);
+        }
         }
       }
       
@@ -141,13 +180,17 @@ export async function POST(request: NextRequest) {
     }
 
     const db = await getDatabase();
-    const query = `INSERT INTO streams (name, obs_source_name, url, team_id) VALUES (?, ?, ?, ?)`;
+    const query = `INSERT INTO streams_2025_spring_adr (name, obs_source_name, url, team_id) VALUES (?, ?, ?, ?)`;
     db.run(query, [name, obs_source_name, url, team_id])
     await disconnectFromOBS();
     return NextResponse.json({ message: 'Stream added successfully' }, {status: 201})
-  } catch (error) {
-    console.error('Error adding stream:', error);
-    await disconnectFromOBS();
-    return NextResponse.json({ error: 'Failed to add stream' }, { status: 500 });
-  }
+} catch (error) {
+if (error instanceof Error) {
+    console.error('Error adding stream:', error.message);
+} else {
+    console.error('An unknown error occurred while adding stream:', error);
+}
+await disconnectFromOBS();
+return NextResponse.json({ error: 'Failed to add stream' }, { status: 500 });
+}
 }
