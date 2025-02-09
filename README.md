@@ -1,3 +1,5 @@
+[![Lint and Build](https://github.com/derekslenk/obs-source-switcher-plugin-ui/actions/workflows/build.yml/badge.svg)](https://github.com/derekslenk/obs-source-switcher-plugin-ui/actions/workflows/build.yml)
+
 This is a [Next.js](https://nextjs.org) app to control multiple OBS [Source Switchers](https://obsproject.com/forum/resources/source-switcher.941/)
 
 ## Configuration
