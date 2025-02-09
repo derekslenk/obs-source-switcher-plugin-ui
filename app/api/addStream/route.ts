@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDatabase } from '../../../lib/database';
 import { connectToOBS, getOBSClient, disconnectFromOBS, addSourceToSwitcher } from '../../../lib/obsClient';
 
+interface OBSClient {
+    call: (method: string, params?: Record<string, unknown>) => Promise<Record<string, unknown>>;
+}
+
 interface OBSScene {
 sceneName: string;
 }
@@ -10,6 +14,15 @@ interface OBSInput {
 inputName: string;
 }
 
+interface GetSceneListResponse {
+currentProgramSceneName: string;
+currentPreviewSceneName: string;
+scenes: OBSScene[];
+}
+
+interface GetInputListResponse {
+inputs: OBSInput[];
+}
 const screens = [
   'ss_large',
   'ss_left',
@@ -20,7 +33,7 @@ const screens = [
   'ss_bottom_right',
 ];
 
-async function fetchTeamName(teamId: any) {
+async function fetchTeamName(teamId: number) {
   try {
     const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
     const response = await fetch(`${baseUrl}/api/getTeamName?team_id=${teamId}`);
@@ -39,7 +52,7 @@ return null;
 }
 }
 
-async function addBrowserSourceWithAudioControl(obs: any, sceneName: string, inputName: string, url: string) {
+async function addBrowserSourceWithAudioControl(obs: OBSClient, sceneName: string, inputName: string, url: string) {
   try {
     // Step 1: Create the browser source input
     await obs.call('CreateInput', {
@@ -109,21 +122,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    let obs: any;
-
     // Connect to OBS WebSocket
     console.log("Pre-connect")
     await connectToOBS();
     console.log('Pre client')
-    obs = await getOBSClient();
+    const obs: OBSClient = await getOBSClient();
     // obs.on('message', (msg) => {
     //   console.log('Message from OBS:', msg);
     // });
     let inputs;
     try {
-      const response = await obs.call('GetInputList');
-      inputs = response.inputs;
-      // console.log('Inputs:', inputs);
+    const response = await obs.call('GetInputList');
+    const inputListResponse = response as unknown as GetInputListResponse;
+    inputs = inputListResponse.inputs;
+    // console.log('Inputs:', inputs);
     } catch (err) {
     if (err instanceof Error) {
         console.error('Failed to fetch inputs:', err.message);
@@ -134,7 +146,9 @@ export async function POST(request: NextRequest) {
     }
     const teamName = await fetchTeamName(team_id);
     console.log('Team Name:', teamName)
-    const { scenes } = await obs.call('GetSceneList');
+    const response = await obs.call('GetSceneList');
+    const sceneListResponse = response as unknown as GetSceneListResponse;
+    const { scenes } = sceneListResponse;
     const groupExists = scenes.some((scene: OBSScene) => scene.sceneName === teamName);
     if (!groupExists) {
       await obs.call('CreateScene', { sceneName: teamName });

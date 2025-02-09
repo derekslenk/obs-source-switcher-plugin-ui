@@ -26,12 +26,19 @@ export async function GET() {
         const chickenPath = path.join(FILE_DIRECTORY, 'chicken.txt');
 
     
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const large = fs.existsSync(largePath) ? fs.readFileSync(largePath, 'utf-8') : null;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const left = fs.existsSync(leftPath) ? fs.readFileSync(leftPath, 'utf-8') : null;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const right = fs.existsSync(rightPath) ? fs.readFileSync(rightPath, 'utf-8') : null;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const topLeft = fs.existsSync(topLeftPath) ? fs.readFileSync(topLeftPath, 'utf-8') : null;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const topRight = fs.existsSync(topRightPath) ? fs.readFileSync(topRightPath, 'utf-8') : null;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const bottomLeft = fs.existsSync(bottomLeftPath) ? fs.readFileSync(bottomLeftPath, 'utf-8') : null;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const bottomRight = fs.existsSync(bottomRightPath) ? fs.readFileSync(bottomRightPath, 'utf-8') : null;
 
         const tank = fs.existsSync(tankPath) ? fs.readFileSync(tankPath, 'utf-8') : null;

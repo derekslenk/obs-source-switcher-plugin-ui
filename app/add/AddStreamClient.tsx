@@ -41,7 +41,7 @@ export default function AddStreamClient() {
   };
 
   const handleTeamSelect = (teamId:number) => {
-    // @ts-ignore
+    // @ts-expect-error - team_id can be null or number in formData, but TypeScript expects only number
     setFormData((prev) => ({ ...prev, team_id: teamId }));
   };
 
