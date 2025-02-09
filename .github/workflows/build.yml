@@ -39,11 +39,8 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Debug files in the repo
-        run: find . -type f | grep '.next'
-       
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-artifact
-          path: .next/**/*
+          path: ./.next/**/*
