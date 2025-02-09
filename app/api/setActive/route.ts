@@ -32,11 +32,12 @@ export async function POST(request: NextRequest) {
 
     fs.writeFileSync(filePath, stream.obs_source_name);
     return NextResponse.json({ message: `${screen} updated successfully.` }, { status: 200 });
-  } catch (error) {
-    console.error('Error updating active source:', error);
-    return NextResponse.json(
-      { error: 'Failed to update active source', details: error.message },
-      { status: 500 }
-    );
+} catch (error) {
+console.error('Error updating active source:', error);
+const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+return NextResponse.json(
+    { error: 'Failed to update active source', details: errorMessage },
+    { status: 500 }
+);
   }
 }

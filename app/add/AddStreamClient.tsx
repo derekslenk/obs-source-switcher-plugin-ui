@@ -40,7 +40,8 @@ export default function AddStreamClient() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleTeamSelect = (teamId) => {
+  const handleTeamSelect = (teamId:number) => {
+    // @ts-ignore
     setFormData((prev) => ({ ...prev, team_id: teamId }));
   };
 

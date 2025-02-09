@@ -19,11 +19,11 @@ export default function Dropdown({
   isOpen: controlledIsOpen,
   onToggle,
 }: DropdownProps) {
-  const dropdownRef = useRef(null);
+const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(controlledIsOpen ?? false);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent) => { if (!dropdownRef.current || !(event.target instanceof Node)) return;
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         if (onToggle) onToggle(false);
         else setIsOpen(false);
